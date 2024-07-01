@@ -41,6 +41,13 @@ menu.addEventListener("click", function(event){
 })
 
 const addToCart = (name, price) => {
+    const existingItem = cart.find(item => item.name === name);
+
+    if(existingItem){
+        // Se o item já existe, aumenta apenas a quantidade
+        existingItem.quantity += 1;
+        return;
+    }
     cart.push({
         name,
         price,
