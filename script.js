@@ -132,7 +132,14 @@ addressInput.addEventListener("input", function(event){
     }
 })
 
+// Finalizar pedido
 checkoutBtn.addEventListener("click", function(){
+
+    const isOpen = checkRestaurantOpen();
+    if(!isOpen){
+        alert("RESTAURANTE FECHADO NO MOMENTO!")
+        return;
+    }
     if(cart.length === 0) return;
     if(addressInput.value === ""){
         addressWarn.classList.remove("hidden")
