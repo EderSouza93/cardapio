@@ -122,3 +122,21 @@ const removeCartItem = (name) => {
         updateCartModal();
     }
 }
+
+addressInput.addEventListener("input", function(event){
+    let inputValue = event.target.value
+
+    if(inputValue !== ""){
+        addressInput.classList.remove("border-red-500")
+        addressWarn.classList.add("hidden")
+    }
+})
+
+checkoutBtn.addEventListener("click", function(){
+    if(cart.length === 0) return;
+    if(addressInput.value === ""){
+        addressWarn.classList.remove("hidden")
+        addressInput.classList.add("border-red-500")
+        return;
+    }
+})
