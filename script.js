@@ -84,6 +84,13 @@ const updateCartModal = () => {
         </div>
         `
 
+        total += item.price * item.quantity;
+
         cartItemsContainer.appendChild(cartItemElement)
     })
+
+    cartTotal.textContent = total.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+    });
 }
