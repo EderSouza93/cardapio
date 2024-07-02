@@ -135,17 +135,32 @@ addressInput.addEventListener("input", function(event){
 // Finalizar pedido
 checkoutBtn.addEventListener("click", function(){
 
-    const isOpen = checkRestaurantOpen();
-    if(!isOpen){
-        alert("RESTAURANTE FECHADO NO MOMENTO!")
-        return;
-    }
+    // const isOpen = checkRestaurantOpen();
+    // if(!isOpen){
+    //     alert("RESTAURANTE FECHADO NO MOMENTO!")
+    //     return;
+    // }
     if(cart.length === 0) return;
     if(addressInput.value === ""){
         addressWarn.classList.remove("hidden")
         addressInput.classList.add("border-red-500")
         return;
     }
+
+    // Enviar pedido para a api Whats
+    const cartItems = cart.map((item) => {
+        return (
+            ` ${item.name} Quantidade: (${item.quantity} Preço: R$${item.price}) |`
+        )
+    }).join("")
+
+    const message = encodeURIComponent(cartItems)
+    const phone = "79998543128"
+
+    window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
+
+    cart = []
+    updateCartModal()
 })
 
 // Verifica a hora e manipula o card do horário
