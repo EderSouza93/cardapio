@@ -29,6 +29,7 @@ closeModalBtn.addEventListener("click", function(){
     cartModal.style.display = "none"
 })
 
+// Função que chama o addToCart através do click
 menu.addEventListener("click", function(event){
 
     let parentButton = event.target.closest(".add-to-cart-btn");
@@ -41,6 +42,7 @@ menu.addEventListener("click", function(event){
         }
 })
 
+// Função que percorre a array cart e verifica se o item já existe nela e acrescenta o mesmo 
 const addToCart = (name, price) => {
     const existingItem = cart.find(item => item.name === name);
 
@@ -49,6 +51,7 @@ const addToCart = (name, price) => {
         existingItem.quantity += 1;
         
     }else{
+        // Se não existe acrescenta o objeto do item selecionado. 
         cart.push({
             name,
             price,
@@ -56,6 +59,7 @@ const addToCart = (name, price) => {
         })
     }
 
+    // Atualiza a interface
     updateCartModal()
     
 }
