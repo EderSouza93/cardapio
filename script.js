@@ -61,6 +61,17 @@ const addToCart = (name, price) => {
 
     // Atualiza a interface
     updateCartModal()
+    Toastify({
+        text: "Item adicionado ao carrinho!",
+        duration: 3000,
+        close: true,
+        gravity: "top", // `top` or `bottom`
+        position: "right", // `left`, `center` or `right`
+        stopOnFocus: true, // Prevents dismissing of toast on hover
+        style: {
+          background: "#4caf50",
+        },
+      }).showToast()
     
 }
 
