@@ -184,6 +184,63 @@ checkoutBtn.addEventListener("click", function(){
 
     window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
 
+    // // Requisição por api
+    // // Mapeando os itens do carrinho 
+    // const cartItems = cart.map((item) => ({
+    //     name: item.name,
+    //     quantity: item.quantity,
+    //     price: item.price
+    // }));
+
+    // const order = {
+    //     items: cartItems,
+    //     mesa: mesa,
+    //     timestamp: new Date().toISOString()
+    // };
+
+    // console.log("Pedido a ser enviado:", order);
+    
+    // try {
+    //     const response = await fetch('http://localhost:3000/api/orders', {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         },
+    //         body: JSON.stringify(order)
+    //     });
+
+    //     if (response.ok) {
+    //         const result = await response.json();
+    //         console.log('Resposta do servidor:', result);
+    //         Toastify({
+    //             text: "Pedido enviado com sucesso!",
+    //             duration: 3000,
+    //             close: true,
+    //             gravity: "top", // `top` or `bottom`
+    //             position: "right", // `left`, `center` or `right`
+    //             stopOnFocus: true, // Prevents dismissing of toast on hover
+    //             style: {
+    //               background: "#4caf50",
+    //             },
+    //           }).showToast();
+    //     } else {
+    //         throw new Error('Falha ao enviar o pedido');
+    //     }
+    // } catch (error) {
+    //     console.error('Erro:', error);
+    //     Toastify({
+    //         text: "Erro ao enviar o pedido",
+    //         duration: 3000,
+    //         close: true,
+    //         gravity: "top", // `top` or `bottom`
+    //         position: "right", // `left`, `center` or `right`
+    //         stopOnFocus: true, // Prevents dismissing of toast on hover
+    //         style: {
+    //           background: "#ef4444",
+    //         },
+    //       }).showToast();
+    // }
+
     cart = []
     updateCartModal()
 })
@@ -192,17 +249,32 @@ checkoutBtn.addEventListener("click", function(){
 const checkRestaurantOpen = () => {
     const data = new Date();
     const hora = data.getHours();
-    return hora >= 18 && hora < 22;
+    const dia  = data.getDay();
+
+    const diasFechados = [1];
+
+    if(diasFechados.includes(dia)){
+        return false;
+    }
+    return hora >= 10 && hora < 22;
     //true o restaurante esta aberto
 }
 
-const spanItem = document.getElementById("date-span")
+const spanItem = document.getElementById("date-span");
+const openItem = document.getElementById("open-span");
 const isOpen = checkRestaurantOpen();
+const spanText = document.getElementById("text-span");
 
 if(isOpen){
     spanItem.classList.remove("bg-red-500")
     spanItem.classList.add("bg-green-600")
+    openItem.classList.remove("bg-red-500")
+    openItem.classList.add("bg-green-600")
+
 }else{
     spanItem.classList.remove("bg-green-600")
     spanItem.classList.add("bg-red-500")
+    openItem.classList.remove("bg-green-600")
+    openItem.classList.add("bg-red-500")
+    spanText.textContent = 'Fechado'
 }
