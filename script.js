@@ -6,7 +6,10 @@ const cartTotal = document.getElementById("cart-total");
 const checkoutBtn = document.getElementById("checkout-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const cartCount = document.getElementById("cart-count");
-const addressInput = document.getElementById("address");
+const streetInput = document.getElementById("rua");
+const numberInput = document.getElementById("numero");
+const complementInput = document.getElementById("complemento");
+const bairroInput = document.getElementById("bairro");
 const addressWarn = document.getElementById("address-warn");
 
 let cart = []
@@ -61,17 +64,7 @@ const addToCart = (name, price) => {
 
     // Atualiza a interface
     updateCartModal()
-    Toastify({
-        text: "Item adicionado ao carrinho!",
-        duration: 3000,
-        close: true,
-        gravity: "top", // `top` or `bottom`
-        position: "right", // `left`, `center` or `right`
-        stopOnFocus: true, // Prevents dismissing of toast on hover
-        style: {
-          background: "#4caf50",
-        },
-      }).showToast()
+    showToast("Item adicionado ao carrinho!", "#22c55e")
     
 }
 
@@ -138,120 +131,122 @@ const removeCartItem = (name) => {
     }
 }
 
-addressInput.addEventListener("input", function(event){
-    let inputValue = event.target.value
-
-    if(inputValue !== ""){
-        addressInput.classList.remove("border-red-500")
-        addressWarn.classList.add("hidden")
+const validateAddressField = (input, warnElement) => {
+    if (input.value.trim() === "") {
+        input.classList.add("border-red-500");
+        warnElement.classList.remove("hidden");
+        return false;
+    } else {
+        input.classList.remove("border-red-500");
+        warnElement.classList.add("hidden");
+        return true;
     }
+}
+
+[streetInput, numberInput, bairroInput].forEach(input => {
+    input.addEventListener("input", function(){
+        validateAddressField(this.addressWarn);
+    })
 })
 
 // Finalizar pedido
-checkoutBtn.addEventListener("click", function(){
+checkoutBtn.addEventListener("click",  async function(){ // essa função só é async caso a requisição seja por rest
 
     const isOpen = checkRestaurantOpen();
     if(!isOpen){
-        Toastify({
-            text: "Ops! O restaurante está fechado",
-            duration: 3000,
-            close: true,
-            gravity: "top", // `top` or `bottom`
-            position: "right", // `left`, `center` or `right`
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-            style: {
-              background: "#ef4444",
-            },
-          }).showToast()
+        showToast("Ops! O restaurante está fechado", "#ef4444")
         return;
     }
-    if(cart.length === 0) return;
-    if(addressInput.value === ""){
-        addressWarn.classList.remove("hidden")
-        addressInput.classList.add("border-red-500")
+    if(cart.length === 0) { 
+        showToast("Seu carrinho está vazio", "#ef4444")
         return;
     }
 
-    // Enviar pedido para a api Whats
-    const cartItems = cart.map((item) => {
-        return (
-            ` ${item.name} Quantidade: (${item.quantity} Preço: R$${item.price}) |`
-        )
-    }).join("")
+    const streetValid = validateAddressField(streetInput, addressWarn);
+    const numberValid = validateAddressField(numberInput, addressWarn);
+    const bairroValid = validateAddressField(bairroInput, addressWarn);
 
-    const message = encodeURIComponent(cartItems)
-    const phone = "+5579998543128"
+    if (!streetValid || !numberValid || !bairroValid) {
+        showToast("Por favor, preencha todos os campos obrigatórios do endereço", "#ef4444");
+        return;
+    }
 
-    window.open(`https://wa.me/${phone}?text=${message} Endereço: ${addressInput.value}`, "_blank")
+    // Enviar pedido para a api Whats - caso seja o envio pela api Wahtsapp a função deve deixar de ser async
+    // const cartItems = cart.map((item) => {
+    //     return (
+    //         ` ${item.name} Quantidade: (${item.quantity} Preço: R$${item.price}) |`
+    //     )
+    // }).join(" | ")
 
-    // // Requisição por api
-    // // Mapeando os itens do carrinho 
-    // const cartItems = cart.map((item) => ({
-    //     name: item.name,
-    //     quantity: item.quantity,
-    //     price: item.price
-    // }));
+    // const message = encodeURIComponent(cartItems)
+    // const phone = "+5579998543128"
 
-    // const order = {
-    // orderType: 'delivery',
-    // enderecoEntrega: {
-    //   rua: 'Rua Exemplo',
-    //   numero: '123',
-    //   complemento: 'Apto 456',
-    //   bairro: 'Centro',
-    //   cidade: 'São Paulo',
-    //   cep: '12345-678'
-    //  },   
-    //     items: cartItems,
-    //     timestamp: new Date().toISOString()
-    // };
+    // window.open(`https://wa.me/${phone}?text=${message} Endereço: ${streetInput.value}, numero ${numberInput.value}, ${complementInput.value}, bairro ${bairroInput.value}`, "_blank")
 
-    // console.log("Pedido a ser enviado:", order);
+    // console.log("Pedido enviado:", cartItems);
+    // showToast("Pedido enviado com sucesso!", "#22c55e")
+
+    // Requisição por api
+
+    // Mapeando os itens do carrinho 
+     const cartItems = cart.map((item) => ({
+         name: item.name,
+         quantity: item.quantity,
+         price: item.price
+     }));
+
+     const order = {
+        orderType: 'delivery',
+        items: cartItems,
+        enderecoEntrega: {
+            rua: 'Rua Exemplo',
+            numero: '123',
+            complemento: 'Apto 456',
+            bairro: 'Centro',
+        },   
+         timestamp: new Date().toISOString()
+     };
+
+     console.log("Pedido a ser enviado:", order);
     
-    // try {
-    //     const response = await fetch('http://localhost:3000/api/orders', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify(order)
-    //     });
+    try {
+        const response = await fetch('http://localhost:3000/api/orders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        });
 
-    //     if (response.ok) {
-    //         const result = await response.json();
-    //         console.log('Resposta do servidor:', result);
-    //         Toastify({
-    //             text: "Pedido enviado com sucesso!",
-    //             duration: 3000,
-    //             close: true,
-    //             gravity: "top", // `top` or `bottom`
-    //             position: "right", // `left`, `center` or `right`
-    //             stopOnFocus: true, // Prevents dismissing of toast on hover
-    //             style: {
-    //               background: "#4caf50",
-    //             },
-    //           }).showToast();
-    //     } else {
-    //         throw new Error('Falha ao enviar o pedido');
-    //     }
-    // } catch (error) {
-    //     console.error('Erro:', error);
-    //     Toastify({
-    //         text: "Erro ao enviar o pedido",
-    //         duration: 3000,
-    //         close: true,
-    //         gravity: "top", // `top` or `bottom`
-    //         position: "right", // `left`, `center` or `right`
-    //         stopOnFocus: true, // Prevents dismissing of toast on hover
-    //         style: {
-    //           background: "#ef4444",
-    //         },
-    //       }).showToast();
-    // }
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Resposta do servidor:', result);
+            showToast("Pedido enviado com sucesso!", "#22c55e");
+        } else {
+            throw new Error('Falha ao enviar o pedido');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showToast("Erro ao enviar o pedido", "#ef4444")
+    }
 
-    cart = []
-    updateCartModal()
+    cart = [];
+    updateCartModal();
 })
+
+const showToast = (message, backgroundColor) => {
+    Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        stopOnFocus: true,
+        style: {
+            background: backgroundColor,
+        },
+    }).showToast();
+}
 
 // Verifica a hora e manipula o card do horário
 const checkRestaurantOpen = () => {
@@ -259,11 +254,14 @@ const checkRestaurantOpen = () => {
     const hora = data.getHours();
     const dia  = data.getDay();
 
+    // Defini os dias em que o restaurante está fechado
     const diasFechados = [1];
 
+    // Verifica se o dia atual é um dos dias em que o restaurante está fechado 
     if(diasFechados.includes(dia)){
         return false;
     }
+    // Verifica se o horário está dentro do horário de funcionamento. 
     return hora >= 10 && hora < 22;
     //true o restaurante esta aberto
 }
