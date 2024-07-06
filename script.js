@@ -193,8 +193,16 @@ checkoutBtn.addEventListener("click", function(){
     // }));
 
     // const order = {
+    // orderType: 'delivery',
+    // enderecoEntrega: {
+    //   rua: 'Rua Exemplo',
+    //   numero: '123',
+    //   complemento: 'Apto 456',
+    //   bairro: 'Centro',
+    //   cidade: 'São Paulo',
+    //   cep: '12345-678'
+    //  },   
     //     items: cartItems,
-    //     mesa: mesa,
     //     timestamp: new Date().toISOString()
     // };
 
