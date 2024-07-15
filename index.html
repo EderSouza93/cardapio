@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"/>
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
@@ -362,6 +363,29 @@
             <div id="cart-items" class="flex justify-between mb-2 flex-col"></div>
 
             <p class="font-bold">Total: <span id="cart-total">0.00</span></p>
+
+            <p class="font-bold">Nome Completo</p>
+            <input 
+                type="text"
+                placeholder="Digite seu nome..."
+                id="name"
+                class="w-96 border-2 p-1 rounded my-1"
+            />
+            <p class="font-bold">forma de pagamento</p>
+            <label for="money"><span class="material-symbols-outlined">
+              payments
+              </span> Dinheiro</label>
+            <input type="radio" name="payments-option" id="money">
+            <label for="credit-card"><span class="material-symbols-outlined">
+              credit_card
+              </span> Cartão de Crédito</label>
+            <input type="radio" name="payments-option" id="credit-card">
+            <label for="debit-card"><span class="material-symbols-outlined">
+              credit_card
+              </span> Cartão de Débito</label>
+            <input type="radio" name="payments-option" id="debit-card">
+            <label for="pix"><img width="15" height="15" src="https://img.icons8.com/ios-glyphs/30/pix.png" alt="pix"/> Pix</label>
+            <input type="radio" name="payments-option" id="pix">
 
             <p class="font-bold">Endereço de entrega:</p>
             <input 

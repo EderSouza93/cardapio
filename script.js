@@ -255,7 +255,7 @@ const checkRestaurantOpen = () => {
     const dia  = data.getDay();
 
     // Defini os dias em que o restaurante está fechado
-    const diasFechados = [1];
+    const diasFechados = [];
 
     // Verifica se o dia atual é um dos dias em que o restaurante está fechado 
     if(diasFechados.includes(dia)){
